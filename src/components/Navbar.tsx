@@ -39,12 +39,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-                width="50.000000pt" height="50.000000pt" viewBox="0 0 2000.000000 2000.000000"
-                preserveAspectRatio="xMidYMid meet">
-                {/* SVG path data */}
-              </svg>
-              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">XKroot</span>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">XKroot</span>
             </Link>
           </div>
 
@@ -62,12 +57,17 @@ export default function Navbar() {
               Find Jobs
             </Link>
             <Link 
+              to="/perfect-job" 
+              className={`${isActive('/perfect-job')} transition-colors duration-200`}
+            >
+              Perfect Job
+            </Link>
+            <Link 
               to="/companies" 
               className={`${isActive('/companies')} transition-colors duration-200`}
             >
               Companies
             </Link>
-            
             <Link 
               to="/recruiter" 
               className={`${isActive('/recruiter')} transition-colors duration-200`}
@@ -167,6 +167,12 @@ export default function Navbar() {
               className={`block px-3 py-2 ${isActive('/jobs')} transition-colors duration-200`}
             >
               Find Jobs
+            </Link>
+            <Link 
+              to="/perfect-job" 
+              className={`block px-3 py-2 ${isActive('/perfect-job')} transition-colors duration-200`}
+            >
+              Perfect Job
             </Link>
             <Link 
               to="/companies" 

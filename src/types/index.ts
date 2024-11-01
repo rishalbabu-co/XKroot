@@ -17,24 +17,6 @@ export interface Job {
   applicants: number;
 }
 
-export interface Company {
-  id: string;
-  name: string;
-  logo: string;
-  description: string;<boltAction type="file" filePath="src/types/index.ts">  industry: string;
-  size: string;
-  location: string;
-  website: string;
-  founded: string;
-  socialMedia: {
-    linkedin?: string;
-    twitter?: string;
-  };
-  benefits: string[];
-  culture: string[];
-  activeJobCount: number;
-}
-
 export interface Profile {
   id?: string;
   userId?: string;
@@ -82,23 +64,6 @@ export interface SocialLinks {
   website?: string;
   github?: string;
   linkedin?: string;
-}
-
-export interface Post {
-  id: string;
-  userId: string;
-  userPhoto: string;
-  userName: string;
-  content: string;
-  media?: {
-    type: 'image' | 'video' | 'gif';
-    url: string;
-  }[];
-  likes: number;
-  comments: number;
-  shares: number;
-  timestamp: string;
-  isLiked?: boolean;
 }
 
 export interface Notification {

@@ -4,6 +4,7 @@ import type { Post } from '../../types';
 import CommentSection from './CommentSection';
 import PostOptionsMenu from './PostOptionsMenu';
 import EditPostModal from './EditPostModal';
+import ShareMenu from './ShareMenu';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface FeedPostProps {
@@ -41,6 +42,7 @@ export default function FeedPost({ post, onUpdate, onDelete }: FeedPostProps) {
   const [comments, setComments] = useState(SAMPLE_COMMENTS);
   const [showComments, setShowComments] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
 
   const isAuthor = currentUser?.uid === post.userId;
 
@@ -174,10 +176,21 @@ export default function FeedPost({ post, onUpdate, onDelete }: FeedPostProps) {
             <MessageCircle className="h-5 w-5" />
             <span>Comment</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-            <Share2 className="h-5 w-5" />
-            <span>Share</span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowShareMenu(!showShareMenu)}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors"
+            >
+              <Share2 className="h-5 w-5" />
+              <span>Share</span>
+            </button>
+            {showShareMenu && (
+              <ShareMenu
+                postId={post.id}
+                onClose={() => setShowShareMenu(false)}
+              />
+            )}
+          </div>
         </div>
 
         {/* Comments Section */}

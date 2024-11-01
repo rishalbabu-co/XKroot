@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { X, Image, Video, Smile, Upload } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import type { Post } from '../../types';
+import EmojiPicker from './EmojiPicker';
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }: CreatePos
   const [content, setContent] = useState('');
   const [media, setMedia] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -23,11 +25,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }: CreatePos
     setLoading(true);
 
     try {
-      // Here you would typically:
-      // 1. Upload media files to storage
-      // 2. Create post in database
-      // 3. Update feed
-
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -50,6 +47,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }: CreatePos
       onSubmit(newPost);
       setContent('');
       setMedia([]);
+      setShowEmojiPicker(false);
     } catch (error) {
       console.error('Error creating post:', error);
     } finally {
@@ -60,6 +58,10 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }: CreatePos
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setMedia(prev => [...prev, ...files]);
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    setContent(prev => prev + emoji);
   };
 
   return (
@@ -144,13 +146,21 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }: CreatePos
                 <Video className="h-5 w-5" />
                 <span>Video</span>
               </button>
-              <button
-                type="button"
-                className="flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-              >
-                <Smile className="h-5 w-5" />
-                <span>GIF</span>
-              </button>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className="flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+                >
+                  <Smile className="h-5 w-5" />
+                  <span>Emoji</span>
+                </button>
+                {showEmojiPicker && (
+                  <div className="absolute bottom-full mb-2">
+                    <EmojiPicker onSelect={handleEmojiSelect} onClose={() => setShowEmojiPicker(false)} />
+                  </div>
+                )}
+              </div>
             </div>
 
             <button

@@ -15,6 +15,7 @@ import SavedJobs from './pages/SavedJobs';
 import Settings from './pages/Settings';
 import EmployerAuth from './pages/EmployerAuth';
 import Feed from './pages/Feed';
+import PerfectJob from './pages/PerfectJob';
 import ThemeToggle from './components/ThemeToggle';
 import ChatWidget from './components/chat/ChatWidget';
 
@@ -41,6 +42,11 @@ export function App() {
             <Route path="/jobs" element={
               <ProtectedRoute>
                 <FindJobs />
+              </ProtectedRoute>
+            } />
+            <Route path="/perfect-job" element={
+              <ProtectedRoute>
+                <PerfectJob />
               </ProtectedRoute>
             } />
             <Route path="/jobs/:id" element={
