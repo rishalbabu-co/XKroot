@@ -1,5 +1,6 @@
 import { MapPin, Briefcase, GraduationCap, Mail, Calendar, ExternalLink, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Profile } from '../types';
 
 interface CandidateCardProps {
@@ -7,12 +8,12 @@ interface CandidateCardProps {
 }
 
 export default function CandidateCard({ candidate }: CandidateCardProps) {
+  const navigate = useNavigate();
   const latestExperience = candidate.experience[0];
   const latestEducation = candidate.education[0];
   const [showChat, setShowChat] = useState(false);
 
   const handleStartChat = () => {
-    // This will trigger the chat widget to open with this candidate
     const event = new CustomEvent('startChat', { 
       detail: { 
         recipientId: candidate.id,
@@ -43,19 +44,19 @@ export default function CandidateCard({ candidate }: CandidateCardProps) {
                 </p>
               </div>
               <div className="flex space-x-2">
-                {candidate.preferences.jobTypes.map((type, index) => (
+                {candidate.languages.map((lang, index) => (
                   <span
                     key={index}
                     className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                   >
-                    {type}
+                    {lang.name}
                   </span>
                 ))}
               </div>
             </div>
 
             <p className="mt-2 text-gray-600 dark:text-gray-300 line-clamp-2">
-              {candidate.about}
+              {candidate.bio}
             </p>
 
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -98,14 +99,14 @@ export default function CandidateCard({ candidate }: CandidateCardProps) {
         <div className="mt-6 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              Preferred salary: ${(candidate.preferences.minSalary / 1000).toFixed(0)}k+
-            </span>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {candidate.preferences.remotePreference} work
+              {candidate.experience.length} years of experience
             </span>
           </div>
           <div className="flex space-x-4">
-            <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-dark-700 hover:bg-gray-50 dark:hover:bg-dark-600">
+            <button
+              onClick={() => navigate(`/recruiter/profile/${candidate.id}`)}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-dark-700 hover:bg-gray-50 dark:hover:bg-dark-600"
+            >
               <ExternalLink className="h-4 w-4 mr-2" />
               View Profile
             </button>

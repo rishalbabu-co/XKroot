@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Briefcase, DollarSign, MapPin, Clock, Building2 } from 'lucide-react';
+import { MapPin, DollarSign, Clock, Building2, Briefcase, MessageCircle } from 'lucide-react';
 import type { Job } from '../types';
 import { useJobStore } from '../stores/jobStore';
+import PhonePePayment from '../components/payment/PhonePePayment';
 
 export default function PostJob() {
   const navigate = useNavigate();
   const { addJob } = useJobStore();
   const [loading, setLoading] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
   const [job, setJob] = useState<Partial<Job>>({
     title: '',
     company: '',
@@ -23,6 +25,10 @@ export default function PostJob() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowPayment(true);
+  };
+
+  const handlePaymentSuccess = async () => {
     setLoading(true);
     try {
       const newJob: Job = {
@@ -65,6 +71,20 @@ export default function PostJob() {
     const benefits = value.split(',').map(benefit => benefit.trim()).filter(Boolean);
     setJob(prev => ({ ...prev, benefits }));
   };
+
+  if (showPayment) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-900 pt-20 pb-12">
+        <div className="max-w-lg mx-auto px-4">
+          <PhonePePayment
+            amount={999}
+            onSuccess={handlePaymentSuccess}
+            onCancel={() => setShowPayment(false)}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900 pt-20 pb-12">
@@ -241,6 +261,22 @@ export default function PostJob() {
               </div>
             </div>
 
+            <div className="border-t border-gray-200 dark:border-dark-700 pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Posting Fee
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    30-day job listing
+                  </p>
+                </div>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  ₹999
+                </p>
+              </div>
+            </div>
+
             <div className="flex justify-end space-x-4">
               <button
                 type="button"
@@ -254,7 +290,7 @@ export default function PostJob() {
                 disabled={loading}
                 className="btn-primary"
               >
-                {loading ? 'Posting...' : 'Post Job'}
+                {loading ? 'Processing...' : 'Continue to Payment'}
               </button>
             </div>
           </form>

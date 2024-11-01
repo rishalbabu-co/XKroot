@@ -20,8 +20,10 @@ interface AuthContextType {
   currentUser: User | null;
   loading: boolean;
   isNewUser: boolean;
+  isAdmin: boolean;
+  hasActiveSubscription: boolean;
   signupWithEmail: (email: string, password: string) => Promise<void>;
-  loginWithEmail: (email: string, password: string) => Promise<void>;
+  loginWithEmail: (email: string, password: string, isAdminLogin?: boolean) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithGithub: () => Promise<void>;
   loginWithPhone: (phoneNumber: string) => Promise<string>;
@@ -39,35 +41,61 @@ export function useAuth() {
   return context;
 }
 
+// Admin credentials
+const ADMIN_EMAIL = 'admin@xkroot.ai';
+const ADMIN_PASSWORD = 'admin123';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isNewUser, setIsNewUser] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const navigate = useNavigate();
 
   async function signupWithEmail(email: string, password: string) {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     setIsNewUser(true);
-    // Redirect to profile creation page for new users
     navigate('/profile');
   }
 
-  async function loginWithEmail(email: string, password: string) {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    // Check if profile exists
-    const hasProfile = await checkUserProfile(result.user.uid);
-    if (!hasProfile) {
-      setIsNewUser(true);
-      navigate('/profile');
-    } else {
-      navigate('/jobs');
+  async function loginWithEmail(email: string, password: string, isAdminLogin = false) {
+    try {
+      // For admin login, verify credentials before Firebase auth
+      if (isAdminLogin) {
+        if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+          throw new Error('Invalid admin credentials');
+        }
+      }
+
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      
+      if (isAdminLogin) {
+        if (email === ADMIN_EMAIL) {
+          setIsAdmin(true);
+          navigate('/admin/dashboard');
+          return;
+        } else {
+          throw new Error('Invalid admin credentials');
+        }
+      }
+
+      // Regular user login flow
+      const hasProfile = await checkUserProfile(result.user.uid);
+      if (!hasProfile) {
+        setIsNewUser(true);
+        navigate('/profile');
+      } else {
+        navigate('/jobs');
+      }
+    } catch (error) {
+      throw error;
     }
   }
 
   async function loginWithGoogle() {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    // Check if profile exists
     const hasProfile = await checkUserProfile(result.user.uid);
     if (!hasProfile) {
       setIsNewUser(true);
@@ -80,7 +108,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function loginWithGithub() {
     const provider = new GithubAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    // Check if profile exists
     const hasProfile = await checkUserProfile(result.user.uid);
     if (!hasProfile) {
       setIsNewUser(true);
@@ -104,7 +131,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function verifyOTP(verificationId: string, otp: string) {
     const credential = PhoneAuthProvider.credential(verificationId, otp);
     const result = await signInWithCredential(auth, credential);
-    // Check if profile exists
     const hasProfile = await checkUserProfile(result.user.uid);
     if (!hasProfile) {
       setIsNewUser(true);
@@ -116,13 +142,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function logout() {
     await signOut(auth);
+    setIsAdmin(false);
+    setHasActiveSubscription(false);
     navigate('/login');
   }
 
   // Check if user has created a profile
   async function checkUserProfile(userId: string): Promise<boolean> {
     // This would typically be a database query
-    // For now, we'll check localStorage as an example
     const profile = localStorage.getItem(`profile_${userId}`);
     return !!profile;
   }
@@ -130,8 +157,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        // Check if user is admin
+        if (user.email === ADMIN_EMAIL) {
+          setIsAdmin(true);
+        }
         const hasProfile = await checkUserProfile(user.uid);
         setIsNewUser(!hasProfile);
+
+        // Check subscription status
+        // This would typically be a database query
+        const hasSubscription = localStorage.getItem(`subscription_${user.uid}`);
+        setHasActiveSubscription(!!hasSubscription);
       }
       setCurrentUser(user);
       setLoading(false);
@@ -144,6 +180,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     currentUser,
     loading,
     isNewUser,
+    isAdmin,
+    hasActiveSubscription,
     signupWithEmail,
     loginWithEmail,
     loginWithGoogle,

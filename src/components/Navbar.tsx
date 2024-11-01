@@ -8,7 +8,7 @@ import { useOnClickOutside } from '../hooks/useOnClickOutside';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const { currentUser, logout } = useAuth();
+  const { currentUser, hasActiveSubscription, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -39,7 +39,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <span className="text-xl font-bold text-gray-900 dark:text-white">XKroot</span>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">XKroot.ai</span>
             </Link>
           </div>
 
@@ -74,6 +74,14 @@ export default function Navbar() {
             >
               Find Talent
             </Link>
+            {(!currentUser || !hasActiveSubscription) && (
+              <Link 
+                to="/pricing" 
+                className={`${isActive('/pricing')} transition-colors duration-200`}
+              >
+                Pricing
+              </Link>
+            )}
             
             {currentUser && (
               <>
@@ -192,6 +200,14 @@ export default function Navbar() {
             >
               Find Talent
             </Link>
+            {(!currentUser || !hasActiveSubscription) && (
+              <Link 
+                to="/pricing" 
+                className={`block px-3 py-2 ${isActive('/pricing')} transition-colors duration-200`}
+              >
+                Pricing
+              </Link>
+            )}
             {currentUser && (
               <>
                 <Link 
