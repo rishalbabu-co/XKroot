@@ -1,73 +1,150 @@
-import { Menu, Search, User, Briefcase, Bell } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, Search, User, Briefcase, ChevronDown, LogOut, Bookmark, Settings } from 'lucide-react';
+import { useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import ThemeToggle from './ThemeToggle';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+import NotificationBell from './notifications/NotificationBell';
+import { useOnClickOutside } from '../hooks/useOnClickOutside';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const { currentUser, logout } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
-  async function handleLogout() {
+  useOnClickOutside(profileMenuRef, () => setShowProfileMenu(false));
+
+  const handleLogout = async () => {
     try {
       await logout();
       navigate('/login');
     } catch (error) {
       console.error('Failed to log out:', error);
     }
-  }
+  };
+
+  const isActive = (path: string) => {
+    if (path === '/jobs' && (location.pathname === '/' || location.pathname === '/jobs')) {
+      return 'text-indigo-600 dark:text-indigo-400 font-bold';
+    }
+    return location.pathname === path ? 
+      'text-indigo-600 dark:text-indigo-400 font-bold' : 
+      'text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400';
+  };
 
   return (
     <nav className="bg-white dark:bg-dark-800 shadow-lg fixed w-full top-0 z-50 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Briefcase className="h-8 w-8 text-indigo-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">XKroot</span>
+            <Link to="/" className="flex items-center">
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                width="50.000000pt" height="50.000000pt" viewBox="0 0 2000.000000 2000.000000"
+                preserveAspectRatio="xMidYMid meet">
+                {/* SVG path data */}
+              </svg>
+              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">XKroot</span>
+            </Link>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/jobs" className="text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">Find Jobs</a>
-            <a href="/companies" className="text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">Companies</a>
+            <Link 
+              to="/jobs" 
+              className={`${isActive('/jobs')} transition-colors duration-200`}
+            >
+              Find Jobs
+            </Link>
+            <Link 
+              to="/companies" 
+              className={`${isActive('/companies')} transition-colors duration-200`}
+            >
+              Companies
+            </Link>
+            <Link 
+              to="/recruiter" 
+              className={`${isActive('/recruiter')} transition-colors duration-200`}
+            >
+              Find Talent
+            </Link>
             
             {currentUser && (
               <>
-                <a href="/profile" className="text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">Profile</a>
-                <div className="relative">
-                  <Bell className="h-6 w-6 text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer" />
-                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-xs text-white">
-                    2
-                  </span>
+                <NotificationBell />
+                <div ref={profileMenuRef} className="relative">
+                  <button
+                    onClick={() => setShowProfileMenu(!showProfileMenu)}
+                    className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400"
+                  >
+                    <User className="h-5 w-5" />
+                    <ChevronDown className={`h-4 w-4 transform transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {showProfileMenu && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-800 rounded-xl shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                      <Link
+                        to="/profile"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-700"
+                        onClick={() => setShowProfileMenu(false)}
+                      >
+                        <User className="h-4 w-4 mr-3" />
+                        Profile
+                      </Link>
+                      <Link
+                        to="/saved-jobs"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-700"
+                        onClick={() => setShowProfileMenu(false)}
+                      >
+                        <Bookmark className="h-4 w-4 mr-3" />
+                        Saved Jobs
+                      </Link>
+                      <Link
+                        to="/settings"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-700"
+                        onClick={() => setShowProfileMenu(false)}
+                      >
+                        <Settings className="h-4 w-4 mr-3" />
+                        Settings
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-700"
+                      >
+                        <LogOut className="h-4 w-4 mr-3" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
               </>
             )}
             
-            <ThemeToggle />
-            
             {currentUser ? (
-              <div className="flex items-center space-x-4">
-                <button onClick={handleLogout} className="text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">
-                  Logout
-                </button>
-                <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
-                  Post a Job
-                </button>
-              </div>
+              <button 
+                onClick={() => navigate('/post-job')}
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+              >
+                Post a Job
+              </button>
             ) : (
               <div className="flex items-center space-x-4">
-                <button onClick={() => navigate('/login')} className="text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link 
+                  to="/login" 
+                  className={`${isActive('/login')} transition-colors duration-200`}
+                >
                   Login
-                </button>
-                <button onClick={() => navigate('/signup')} className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                </Link>
+                <Link 
+                  to="/signup" 
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                >
                   Sign Up
-                </button>
+                </Link>
               </div>
             )}
           </div>
 
-          <div className="md:hidden flex items-center space-x-4">
-            <ThemeToggle />
+          <div className="md:hidden flex items-center">
             <button onClick={() => setIsOpen(!isOpen)}>
               <Menu className="h-6 w-6 text-gray-500 dark:text-gray-400" />
             </button>
@@ -78,28 +155,75 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-white dark:bg-dark-800 transition-colors duration-200">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="/jobs" className="block px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">Find Jobs</a>
-            <a href="/companies" className="block px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">Companies</a>
+            <Link 
+              to="/jobs" 
+              className={`block px-3 py-2 ${isActive('/jobs')} transition-colors duration-200`}
+            >
+              Find Jobs
+            </Link>
+            <Link 
+              to="/companies" 
+              className={`block px-3 py-2 ${isActive('/companies')} transition-colors duration-200`}
+            >
+              Companies
+            </Link>
+            <Link 
+              to="/recruiter" 
+              className={`block px-3 py-2 ${isActive('/recruiter')} transition-colors duration-200`}
+            >
+              Find Talent
+            </Link>
             {currentUser && (
-              <a href="/profile" className="block px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">Profile</a>
+              <>
+                <Link 
+                  to="/profile" 
+                  className={`block px-3 py-2 ${isActive('/profile')} transition-colors duration-200`}
+                >
+                  Profile
+                </Link>
+                <Link 
+                  to="/saved-jobs" 
+                  className={`block px-3 py-2 ${isActive('/saved-jobs')} transition-colors duration-200`}
+                >
+                  Saved Jobs
+                </Link>
+                <Link 
+                  to="/settings" 
+                  className={`block px-3 py-2 ${isActive('/settings')} transition-colors duration-200`}
+                >
+                  Settings
+                </Link>
+              </>
             )}
             {currentUser ? (
               <>
-                <button onClick={handleLogout} className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <button 
+                  onClick={handleLogout}
+                  className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400"
+                >
                   Logout
                 </button>
-                <button className="w-full mt-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                <button 
+                  onClick={() => navigate('/post-job')}
+                  className="w-full mt-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                >
                   Post a Job
                 </button>
               </>
             ) : (
               <>
-                <button onClick={() => navigate('/login')} className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link 
+                  to="/login" 
+                  className={`block px-3 py-2 ${isActive('/login')} transition-colors duration-200`}
+                >
                   Login
-                </button>
-                <button onClick={() => navigate('/signup')} className="w-full mt-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                </Link>
+                <Link 
+                  to="/signup" 
+                  className="w-full mt-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                >
                   Sign Up
-                </button>
+                </Link>
               </>
             )}
           </div>

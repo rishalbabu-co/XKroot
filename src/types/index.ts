@@ -9,40 +9,74 @@ export interface Job {
   requirements: string[];
   posted: string;
   logo: string;
+  category: string;
+  tags: string[];
+  benefits: string[];
+  isRemote: boolean;
+  experienceLevel: 'Entry' | 'Mid' | 'Senior' | 'Lead';
+  applicants: number;
+}
+
+export interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  industry: string;
+  size: string;
+  location: string;
+  website: string;
+  founded: string;
+  socialMedia: {
+    linkedin?: string;
+    twitter?: string;
+  };
+  benefits: string[];
+  culture: string[];
+  activeJobCount: number;
 }
 
 export interface Profile {
-  id: string;
   name: string;
   title: string;
+  photo: string;
   location: string;
-  about: string;
+  bio: string;
+  email: string;
+  phone: string;
   experience: Experience[];
   education: Education[];
-  skills: string[];
-  avatar: string;
+  skills: Skill[];
+  languages: Language[];
+  socialLinks: SocialLinks;
 }
 
 export interface Experience {
-  id: string;
   company: string;
-  title: string;
-  startDate: string;
-  endDate: string;
+  position: string;
+  duration: string;
   description: string;
 }
 
 export interface Education {
-  id: string;
   school: string;
   degree: string;
-  field: string;
-  graduationYear: string;
+  duration: string;
+  gpa: string;
 }
 
-export interface Application {
-  id: string;
-  jobId: string;
-  status: 'pending' | 'reviewed' | 'interviewed' | 'offered' | 'rejected';
-  appliedDate: string;
+export interface Skill {
+  name: string;
+  level: number;
+}
+
+export interface Language {
+  name: string;
+  level: string;
+}
+
+export interface SocialLinks {
+  website?: string;
+  github?: string;
+  linkedin?: string;
 }

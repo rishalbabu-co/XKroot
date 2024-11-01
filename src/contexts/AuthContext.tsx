@@ -3,6 +3,7 @@ import {
   Auth,
   User,
   GoogleAuthProvider,
+  GithubAuthProvider,
   PhoneAuthProvider,
   signInWithPopup,
   signInWithCredential,
@@ -20,6 +21,7 @@ interface AuthContextType {
   signupWithEmail: (email: string, password: string) => Promise<void>;
   loginWithEmail: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  loginWithGithub: () => Promise<void>;
   loginWithPhone: (phoneNumber: string) => Promise<string>;
   verifyOTP: (verificationId: string, otp: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -49,6 +51,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function loginWithGoogle() {
     const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  }
+
+  async function loginWithGithub() {
+    const provider = new GithubAuthProvider();
     await signInWithPopup(auth, provider);
   }
 
@@ -87,6 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signupWithEmail,
     loginWithEmail,
     loginWithGoogle,
+    loginWithGithub,
     loginWithPhone,
     verifyOTP,
     logout
