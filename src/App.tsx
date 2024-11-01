@@ -6,11 +6,15 @@ import Navbar from './components/Navbar';
 import AuthForm from './components/AuthForm';
 import Profile from './pages/Profile';
 import Companies from './pages/Companies';
+import CompanyDetails from './pages/CompanyDetails';
 import FindJobs from './pages/FindJobs';
+import JobDetails from './pages/JobDetails';
 import PostJob from './pages/PostJob';
 import Recruiter from './pages/Recruiter';
 import SavedJobs from './pages/SavedJobs';
 import Settings from './pages/Settings';
+import EmployerAuth from './pages/EmployerAuth';
+import Feed from './pages/Feed';
 import ThemeToggle from './components/ThemeToggle';
 import ChatWidget from './components/chat/ChatWidget';
 
@@ -23,6 +27,7 @@ export function App() {
           <Routes>
             <Route path="/login" element={<AuthForm mode="login" />} />
             <Route path="/signup" element={<AuthForm mode="signup" />} />
+            <Route path="/employer/auth" element={<EmployerAuth />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
@@ -38,9 +43,19 @@ export function App() {
                 <FindJobs />
               </ProtectedRoute>
             } />
+            <Route path="/jobs/:id" element={
+              <ProtectedRoute>
+                <JobDetails />
+              </ProtectedRoute>
+            } />
             <Route path="/companies" element={
               <ProtectedRoute>
                 <Companies />
+              </ProtectedRoute>
+            } />
+            <Route path="/companies/:id" element={
+              <ProtectedRoute>
+                <CompanyDetails />
               </ProtectedRoute>
             } />
             <Route path="/recruiter" element={
@@ -61,6 +76,11 @@ export function App() {
             <Route path="/settings" element={
               <ProtectedRoute>
                 <Settings />
+              </ProtectedRoute>
+            } />
+            <Route path="/feed" element={
+              <ProtectedRoute>
+                <Feed />
               </ProtectedRoute>
             } />
           </Routes>

@@ -5,6 +5,8 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: '#00a70c',
+        'primary-hover': '#008a0a',
         dark: {
           50: '#f8fafc',
           100: '#f1f5f9',

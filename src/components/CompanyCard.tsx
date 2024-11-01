@@ -1,4 +1,5 @@
 import { MapPin, Globe, Users, Briefcase, Calendar, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { Company } from '../types';
 
 interface CompanyCardProps {
@@ -6,6 +7,8 @@ interface CompanyCardProps {
 }
 
 export default function CompanyCard({ company }: CompanyCardProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white dark:bg-dark-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
       <div className="p-6">
@@ -79,8 +82,11 @@ export default function CompanyCard({ company }: CompanyCardProps) {
             <Globe className="h-4 w-4 mr-1" />
             <span>Visit Website</span>
           </a>
-          <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            View Jobs
+          <button
+            onClick={() => navigate(`/companies/${company.id}`)}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            View Open Positions
             <ChevronRight className="ml-2 h-4 w-4" />
           </button>
         </div>

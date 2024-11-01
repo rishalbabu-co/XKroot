@@ -1,7 +1,7 @@
 import { MapPin, Clock, DollarSign, Briefcase, MessageCircle, Users } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Job } from '../types';
-import JobDetailsModal from './JobDetailsModal';
 import JobApplicationModal from './JobApplicationModal';
 import SaveJobButton from './SaveJobButton';
 
@@ -10,7 +10,7 @@ interface JobCardProps {
 }
 
 export default function JobCard({ job }: JobCardProps) {
-  const [showDetails, setShowDetails] = useState(false);
+  const navigate = useNavigate();
   const [showApplication, setShowApplication] = useState(false);
 
   const handleStartChat = () => {
@@ -38,7 +38,7 @@ export default function JobCard({ job }: JobCardProps) {
               />
               <div>
                 <button
-                  onClick={() => setShowDetails(true)}
+                  onClick={() => navigate(`/jobs/${job.id}`)}
                   className="text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400"
                 >
                   {job.title}
@@ -97,7 +97,7 @@ export default function JobCard({ job }: JobCardProps) {
             <div className="flex space-x-4">
               <button
                 onClick={() => setShowApplication(true)}
-                className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                className="bg-[#00a70c] text-white px-6 py-2 rounded-md hover:bg-[#008a0a] transition-colors duration-200"
               >
                 Apply Now
               </button>
@@ -113,16 +113,6 @@ export default function JobCard({ job }: JobCardProps) {
           </div>
         </div>
       </div>
-
-      <JobDetailsModal
-        job={job}
-        isOpen={showDetails}
-        onClose={() => setShowDetails(false)}
-        onApply={() => {
-          setShowDetails(false);
-          setShowApplication(true);
-        }}
-      />
 
       <JobApplicationModal
         job={job}

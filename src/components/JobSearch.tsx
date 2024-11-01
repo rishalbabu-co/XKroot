@@ -137,7 +137,7 @@ export default function JobSearch() {
                 onFocus={() => setShowHistory(true)}
                 onBlur={() => setTimeout(() => setShowHistory(false), 200)}
                 placeholder="Job title, keywords, or company"
-                className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent backdrop-blur-sm"
+                className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-[#00a70c] focus:border-transparent backdrop-blur-sm"
               />
               {/* Search History Dropdown */}
               {showHistory && searchHistory.length > 0 && (
@@ -168,13 +168,13 @@ export default function JobSearch() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="City, state, or 'Remote'"
-                className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent backdrop-blur-sm"
+                className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-[#00a70c] focus:border-transparent backdrop-blur-sm"
               />
             </div>
 
             <button
               onClick={handleSearch}
-              className="md:col-span-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2"
+              className="md:col-span-2 bg-[#00a70c] hover:bg-[#008a0a] text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2"
             >
               <Search className="h-5 w-5" />
               <span>Search</span>
@@ -214,7 +214,7 @@ export default function JobSearch() {
               <select
                 value={filters.jobType}
                 onChange={(e) => setFilters({...filters, jobType: e.target.value})}
-                className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent backdrop-blur-sm [&>option]:bg-gray-800 [&>option]:text-white"
+                className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#00a70c] focus:border-transparent backdrop-blur-sm [&>option]:bg-gray-800 [&>option]:text-white"
               >
                 <option value="">Job Type</option>
                 <option value="full-time">Full-time</option>
@@ -226,7 +226,7 @@ export default function JobSearch() {
               <select
                 value={filters.salary}
                 onChange={(e) => setFilters({...filters, salary: e.target.value})}
-                className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent backdrop-blur-sm [&>option]:bg-gray-800 [&>option]:text-white"
+                className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#00a70c] focus:border-transparent backdrop-blur-sm [&>option]:bg-gray-800 [&>option]:text-white"
               >
                 <option value="">Salary Range</option>
                 <option value="0-50k">$0 - $50k</option>
@@ -247,7 +247,7 @@ export default function JobSearch() {
                 <select
                   value={filters.experience}
                   onChange={(e) => setFilters({...filters, experience: e.target.value})}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent backdrop-blur-sm [&>option]:bg-gray-800 [&>option]:text-white"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#00a70c] focus:border-transparent backdrop-blur-sm [&>option]:bg-gray-800 [&>option]:text-white"
                 >
                   <option value="">Any Experience</option>
                   <option value="entry">Entry Level</option>
@@ -264,7 +264,7 @@ export default function JobSearch() {
                 <select
                   value={filters.category}
                   onChange={(e) => setFilters({...filters, category: e.target.value})}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent backdrop-blur-sm [&>option]:bg-gray-800 [&>option]:text-white"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#00a70c] focus:border-transparent backdrop-blur-sm [&>option]:bg-gray-800 [&>option]:text-white"
                 >
                   <option value="">All Categories</option>
                   {categories.map((category) => (
@@ -281,7 +281,7 @@ export default function JobSearch() {
                     type="checkbox"
                     checked={filters.remote}
                     onChange={(e) => setFilters({...filters, remote: e.target.checked})}
-                    className="h-4 w-4 text-indigo-500 focus:ring-indigo-500 border-white/20 rounded bg-white/10"
+                    className="h-4 w-4 text-[#00a70c] focus:ring-[#00a70c] border-white/20 rounded bg-white/10"
                   />
                   <span>Remote Only</span>
                 </label>

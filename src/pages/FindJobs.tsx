@@ -1,46 +1,8 @@
 import { useState } from 'react';
 import { Search, MapPin, Filter, ArrowDownWideNarrow } from 'lucide-react';
 import JobCard from '../components/JobCard';
+import { useJobStore } from '../stores/jobStore';
 import type { Job } from '../types';
-
-const SAMPLE_JOBS: Job[] = [
-  {
-    id: '1',
-    title: 'Senior Frontend Developer',
-    company: 'TechCorp',
-    location: 'San Francisco, CA',
-    salary: '$120k - $160k',
-    type: 'Full-time',
-    description: 'We are looking for a Senior Frontend Developer to join our team and help build the next generation of our product.',
-    requirements: ['React', 'TypeScript', 'GraphQL', 'CSS-in-JS', 'Testing'],
-    posted: '2 days ago',
-    logo: 'https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=100&h=100&fit=crop',
-    category: 'Engineering',
-    tags: ['Frontend', 'React', 'TypeScript'],
-    benefits: ['Health Insurance', '401k', 'Remote Work'],
-    isRemote: false,
-    experienceLevel: 'Senior',
-    applicants: 45
-  },
-  {
-    id: '2',
-    title: 'Full Stack Engineer',
-    company: 'StartupX',
-    location: 'Remote',
-    salary: '$100k - $140k',
-    type: 'Remote',
-    description: 'Join our fast-growing startup and work on challenging problems in the fintech space.',
-    requirements: ['Node.js', 'React', 'PostgreSQL', 'AWS', 'Docker'],
-    posted: '1 week ago',
-    logo: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=100&h=100&fit=crop',
-    category: 'Engineering',
-    tags: ['Full Stack', 'Node.js', 'React'],
-    benefits: ['Unlimited PTO', 'Stock Options', 'Remote Work'],
-    isRemote: true,
-    experienceLevel: 'Mid',
-    applicants: 32
-  }
-];
 
 interface SearchFilters {
   jobType: string;
@@ -51,6 +13,7 @@ interface SearchFilters {
 }
 
 export default function FindJobs() {
+  const { jobs } = useJobStore();
   const [filters, setFilters] = useState<SearchFilters>({
     jobType: '',
     experience: '',
@@ -208,7 +171,7 @@ export default function FindJobs() {
 
         {/* Job Listings */}
         <div className="space-y-6">
-          {SAMPLE_JOBS.map(job => (
+          {jobs.map(job => (
             <JobCard key={job.id} job={job} />
           ))}
         </div>

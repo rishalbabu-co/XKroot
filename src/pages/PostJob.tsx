@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Briefcase, DollarSign, MapPin, Clock, Building2 } from 'lucide-react';
 import type { Job } from '../types';
+import { useJobStore } from '../stores/jobStore';
 
 export default function PostJob() {
   const navigate = useNavigate();
+  const { addJob } = useJobStore();
   const [loading, setLoading] = useState(false);
   const [job, setJob] = useState<Partial<Job>>({
     title: '',
@@ -23,8 +25,29 @@ export default function PostJob() {
     e.preventDefault();
     setLoading(true);
     try {
-      // TODO: Implement job posting logic with Firebase
-      console.log('Job posted:', job);
+      const newJob: Job = {
+        id: Date.now().toString(),
+        title: job.title!,
+        company: job.company!,
+        location: job.location!,
+        type: job.type as Job['type'],
+        salary: job.salary!,
+        description: job.description!,
+        requirements: job.requirements!,
+        benefits: job.benefits || [],
+        posted: 'Just now',
+        logo: 'https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=100&h=100&fit=crop',
+        category: 'Technology',
+        tags: [],
+        isRemote: job.isRemote!,
+        experienceLevel: job.experienceLevel as Job['experienceLevel'],
+        applicants: 0
+      };
+
+      // Add the job to the store
+      addJob(newJob);
+      
+      // Navigate back to jobs page
       navigate('/jobs');
     } catch (error) {
       console.error('Error posting job:', error);

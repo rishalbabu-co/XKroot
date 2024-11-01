@@ -1,0 +1,163 @@
+// This is your Prisma schema file
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  firebaseUid   String    @unique
+  email         String    @unique
+  name          String?
+  title         String?
+  photo         String?
+  location      String?
+  bio           String?
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Professional Info
+  experience    Experience[]
+  education     Education[]
+  skills        Skill[]
+  languages     Language[]
+  socialLinks   SocialLink?
+
+  // Content
+  posts         Post[]
+  comments      Comment[]
+  likes         Like[]
+
+  // Job Related
+  savedJobs     SavedJob[]
+  applications  JobApplication[]
+  
+  // Following system
+  following     Follow[]    @relation("following")
+  followers     Follow[]    @relation("followers")
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  userId      String
+  company     String
+  position    String
+  duration    String
+  description String
+  startDate   DateTime
+  endDate     DateTime?
+  current     Boolean   @default(false)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Education {
+  id          String    @id @default(cuid())
+  userId      String
+  school      String
+  degree      String
+  field       String
+  startDate   DateTime
+  endDate     DateTime?
+  gpa         String?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Skill {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  level       Int
+  endorsements Int      @default(0)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Language {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  level       String    // Basic, Conversational, Fluent, Native
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SocialLink {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  website     String?
+  github      String?
+  linkedin    String?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  userId      String
+  content     String
+  media       Json?     // Array of media objects
+  likes       Like[]
+  comments    Comment[]
+  shares      Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  postId      String
+  userId      String
+  content     String
+  likes       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id          String    @id @default(cuid())
+  postId      String
+  userId      String
+  createdAt   DateTime  @default(now())
+  post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+}
+
+model SavedJob {
+  id          String    @id @default(cuid())
+  userId      String
+  jobId       String
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+}
+
+model JobApplication {
+  id          String    @id @default(cuid())
+  userId      String
+  jobId       String
+  status      String    // pending, reviewed, interviewing, accepted, rejected
+  resume      String    // URL to resume file
+  coverLetter String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Follow {
+  id          String    @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime  @default(now())
+  follower    User      @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User      @relation("followers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}

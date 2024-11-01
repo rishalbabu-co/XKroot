@@ -1,4 +1,4 @@
-import { Menu, Search, User, Briefcase, ChevronDown, LogOut, Bookmark, Settings } from 'lucide-react';
+import { Menu, Search, User, Briefcase, ChevronDown, LogOut, Bookmark, Settings, Rss } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
@@ -50,6 +50,12 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center space-x-8">
             <Link 
+              to="/feed" 
+              className={`${isActive('/feed')} transition-colors duration-200`}
+            >
+              Feeds
+            </Link>
+            <Link 
               to="/jobs" 
               className={`${isActive('/jobs')} transition-colors duration-200`}
             >
@@ -61,6 +67,7 @@ export default function Navbar() {
             >
               Companies
             </Link>
+            
             <Link 
               to="/recruiter" 
               className={`${isActive('/recruiter')} transition-colors duration-200`}
@@ -166,6 +173,12 @@ export default function Navbar() {
               className={`block px-3 py-2 ${isActive('/companies')} transition-colors duration-200`}
             >
               Companies
+            </Link>
+            <Link 
+              to="/feed" 
+              className={`block px-3 py-2 ${isActive('/feed')} transition-colors duration-200`}
+            >
+              Feed
             </Link>
             <Link 
               to="/recruiter" 
